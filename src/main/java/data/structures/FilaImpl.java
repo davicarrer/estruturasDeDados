@@ -73,4 +73,28 @@ public class FilaImpl<T> implements Fila<T>{
 
         return ((rear == size()-1 && front == 0) || (rear == front-1) || (rear == front +1));
     }
+
+    public void displayQueue(){
+        if(front == -1)
+            System.out.println("Fila vazia");
+        else {
+            System.out.print("Elementos da lista: ");
+            if(rear >= front){
+                for (int i = front; i < rear; i++) {
+                    System.out.print(elements[i] + ", ");
+                }
+
+            } else{
+                for (int i = front; i < size(); i++)
+                {
+                    System.out.print(elements[i] + ", ");
+                }
+
+                for (int i = 0; i <= rear; i++)
+                {
+                    System.out.print(elements[i] + ", ");
+                }
+            }
+        }
+    }
 }
