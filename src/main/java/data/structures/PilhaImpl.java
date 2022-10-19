@@ -50,4 +50,5 @@ public class PilhaImpl<T> implements Pilha<T>{
     public boolean isFull() {
         return (pos+1) == size();
     }
+
 }

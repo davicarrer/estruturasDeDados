@@ -38,8 +38,10 @@ public class FilaImpl<T> implements Fila<T>{
                 front = 0;
                 return elements[size()-1];
             } else {                        // nao está na ultima posicao, basta ++front
-                if (front == rear){
+                if (front == rear){         // só um elemento na fila
+                    int aux = front;
                     front = rear = -1;
+                    return elements[aux];
                 } else
                     return elements[front++];
             }
@@ -52,7 +54,7 @@ public class FilaImpl<T> implements Fila<T>{
         if (isEmpty()) return null;
         else return elements[front];
     }
-
+    @Override
     public T rear(){
         if (isEmpty()) return null;
         else return elements[rear];
@@ -70,8 +72,7 @@ public class FilaImpl<T> implements Fila<T>{
 
     @Override
     public boolean isFull() {
-
-        return ((rear == size()-1 && front == 0) || (rear == front-1) || (rear == front +1));
+        return ((rear == size()-1 && front == 0) || (rear == front-1));
     }
 
     public void displayQueue(){
