@@ -47,7 +47,7 @@ public class FilaTest {
     }
 
     @ParameterizedTest
-    @MethodSource("pushArguments")
+    @MethodSource("enqueueArguments")
     void enqueueOK(int size, int [] elements, int expectedRear, int expectedFront, boolean expectedFull) {
         //given
         Fila<Integer> fila = new FilaImpl<>(size);
@@ -62,7 +62,7 @@ public class FilaTest {
         assertThat(fila.isEmpty()).isFalse();
     }
 
-    static Stream<Arguments> pushArguments() {
+    static Stream<Arguments> enqueueArguments() {
         int elementOne = random();
         int elementTwo = random();
 
@@ -75,7 +75,7 @@ public class FilaTest {
     }
 
     @Test
-    void pushFailedFullStack() {
+    void enqueueFailedFullStack() {
         //given
         int elementOne = random();
         int elementTwo = random();
@@ -88,88 +88,96 @@ public class FilaTest {
     }
 
     @ParameterizedTest
-    @MethodSource("popArguments")
-    void popOk(Pilha<Integer> pilhaToBeUsed, int expectedElement, boolean expectedEmpty) {
+    @MethodSource("dequeueArguments")
+    void dequeueOk(Fila<Integer> filaToBeUsed, int expectedElement, boolean expectedEmpty) {
         //given when
-        var actualElement = pilhaToBeUsed.pop();
+        var actualElement = filaToBeUsed.dequeue();
 
         //then
         assertThat(actualElement).isEqualTo(expectedElement);
-        assertThat(pilhaToBeUsed.isEmpty()).isEqualTo(expectedEmpty);
-        assertThat(pilhaToBeUsed.isFull()).isFalse();
+        assertThat(filaToBeUsed.isEmpty()).isEqualTo(expectedEmpty);
+        assertThat(filaToBeUsed.isFull()).isFalse();
     }
 
-    static Stream<Arguments> popArguments() {
+    static Stream<Arguments> dequeueArguments() {
         int elementOne = random();
         int elementTwo = random();
 
-        Pilha<Integer> pilhaOneElementFull = new PilhaImpl<>(1);
-        pilhaOneElementFull.push(elementOne);
+        Fila<Integer> filaOneElementFull = new FilaImpl<>(1);
+        filaOneElementFull.enqueue(elementOne);
 
-        Pilha<Integer> pilhaTwoElementsFull = new PilhaImpl<>(2);
-        pilhaTwoElementsFull.push(elementOne);
-        pilhaTwoElementsFull.push(elementTwo);
+        Fila<Integer> filaTwoElementsFull = new FilaImpl<>(2);
+        filaTwoElementsFull.enqueue(elementOne);
+        filaTwoElementsFull.enqueue(elementTwo);
 
-        Pilha<Integer> pilhaTwoElementsNotFull = new PilhaImpl<>(2);
-        pilhaTwoElementsNotFull.push(elementOne);
+        Fila<Integer> filaTwoElementsNotFull = new FilaImpl<>(2);
+        filaTwoElementsNotFull.enqueue(elementOne);
 
         return Stream.of(
-                arguments(pilhaOneElementFull, elementOne, true),
-                arguments(pilhaTwoElementsFull, elementTwo, false),
-                arguments(pilhaTwoElementsNotFull, elementOne, true)
+                arguments(filaOneElementFull, elementOne, true),
+                arguments(filaTwoElementsFull, elementOne, false),
+                arguments(filaTwoElementsNotFull, elementOne, true)
         );
     }
 
     @Test
-    void popFailedEmptyStack() {
+    void dequeueFailedEmptyQueue() {
         //given
         int size = random(10);
-        Pilha<Integer> pilha = new PilhaImpl<>(size);
+        Fila<Integer> fila = new FilaImpl<>(size);
 
         //when then
-        assertThatThrownBy(pilha::pop)
+        assertThatThrownBy(fila::dequeue)
                 .isInstanceOf(RuntimeException.class) ;
     }
 
     @Test
-    void verifyStack() {
+    void verifyQueue() {
         //given
         int elementOne = random();
         int elementTwo = random();
         int elementThree = random();
 
         //when then
-        Pilha<Integer> pilha = new PilhaImpl<>(3);
-        assertThat(pilha.isEmpty()).isTrue();
-        assertThat(pilha.isFull()).isFalse();
-        assertThat(pilha.top()).isNull();
+        Fila<Integer> fila = new FilaImpl<>(3);
+        assertThat(fila.isEmpty()).isTrue();
+        assertThat(fila.isFull()).isFalse();
+        assertThat(fila.front()).isNull();
+        assertThat(fila.rear()).isNull();
 
-        pilha.push(elementOne);
-        assertThat(pilha.isEmpty()).isFalse();
-        assertThat(pilha.isFull()).isFalse();
-        assertThat(pilha.top()).isEqualTo(elementOne);
+        fila.enqueue(elementOne);
+        assertThat(fila.isEmpty()).isFalse();
+        assertThat(fila.isFull()).isFalse();
+        assertThat(fila.front()).isEqualTo(elementOne);
+        assertThat(fila.rear()).isEqualTo(elementOne);
 
-        pilha.push(elementTwo);
-        assertThat(pilha.isEmpty()).isFalse();
-        assertThat(pilha.isFull()).isFalse();
-        assertThat(pilha.top()).isEqualTo(elementTwo);
+        fila.enqueue(elementTwo);
+        assertThat(fila.isEmpty()).isFalse();
+        assertThat(fila.isFull()).isFalse();
+        assertThat(fila.front()).isEqualTo(elementOne);
+        assertThat(fila.rear()).isEqualTo(elementTwo);
 
-        pilha.push(elementThree);
-        assertThat(pilha.isEmpty()).isFalse();
-        assertThat(pilha.isFull()).isTrue();
-        assertThat(pilha.top()).isEqualTo(elementThree);
+        fila.enqueue(elementThree);
+        assertThat(fila.isEmpty()).isFalse();
+        assertThat(fila.isFull()).isTrue();
+        assertThat(fila.rear()).isEqualTo(elementThree);
+        assertThat(fila.front()).isEqualTo(elementOne);
 
-        assertThat(pilha.pop()).isEqualTo(elementThree);
-        assertThat(pilha.isEmpty()).isFalse();
-        assertThat(pilha.isFull()).isFalse();
+        assertThat(fila.dequeue()).isEqualTo(elementOne);
+        assertThat(fila.isEmpty()).isFalse();
+        assertThat(fila.isFull()).isFalse();
 
-        assertThat(pilha.pop()).isEqualTo(elementTwo);
-        assertThat(pilha.isEmpty()).isFalse();
-        assertThat(pilha.isFull()).isFalse();
+        assertThat(fila.dequeue()).isEqualTo(elementTwo);
+        assertThat(fila.isEmpty()).isFalse();
+        assertThat(fila.isFull()).isFalse();
 
-        assertThat(pilha.pop()).isEqualTo(elementOne);
-        assertThat(pilha.isEmpty()).isTrue();
-        assertThat(pilha.isFull()).isFalse();
+        assertThat(fila.getIndexFront()).isEqualTo(2);
+        assertThat(fila.getIndexRear()).isEqualTo(2);
+        assertThat(fila.dequeue()).isEqualTo(elementThree);
+        assertThat(fila.getIndexFront()).isEqualTo(-1);
+        assertThat(fila.getIndexRear()).isEqualTo(-1);
+        assertThat(fila.isEmpty()).isTrue();
+        assertThat(fila.isFull()).isFalse();
     }
 
     private static int random() {

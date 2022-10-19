@@ -15,4 +15,8 @@ public interface Fila<T> {
     boolean isEmpty();
 
     boolean isFull();
+
+    int getIndexFront();
+
+    int getIndexRear();
 }

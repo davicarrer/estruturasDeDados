@@ -34,17 +34,17 @@ public class FilaImpl<T> implements Fila<T>{
     @Override
     public T dequeue() {
         if (!isEmpty()) {
-            if(front == size()-1){           //  se estiver na última posicao -> mudo para zero
+            if (front == rear){         // só um elemento na fila
+                int aux = front;
+                front = -1;
+                rear = -1;
+                return elements[aux];
+            } else if((front == size()-1) && (front != 0)){           //  se estiver na última posicao -> mudo para zero
                 front = 0;
                 return elements[size()-1];
-            } else {                        // nao está na ultima posicao, basta ++front
-                if (front == rear){         // só um elemento na fila
-                    int aux = front;
-                    front = rear = -1;
-                    return elements[aux];
-                } else
+            } else
                     return elements[front++];
-            }
+
         }
         throw new RuntimeException("Fila vazia");
     }
@@ -73,6 +73,14 @@ public class FilaImpl<T> implements Fila<T>{
     @Override
     public boolean isFull() {
         return ((rear == size()-1 && front == 0) || (rear == front-1));
+    }
+    @Override
+    public int getIndexFront(){
+        return front;
+    }
+    @Override
+    public int getIndexRear(){
+        return rear;
     }
 
     public void displayQueue(){
