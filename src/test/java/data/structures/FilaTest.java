@@ -79,11 +79,11 @@ public class FilaTest {
         //given
         int elementOne = random();
         int elementTwo = random();
-        Pilha<Integer> pilha = new PilhaImpl<>(1);
-        pilha.push(elementOne);
+        Fila<Integer> fila = new FilaImpl<>(1);
+        fila.enqueue(elementOne);
 
         //when then
-        assertThatThrownBy(() -> pilha.push(elementTwo))
+        assertThatThrownBy(() -> fila.enqueue(elementTwo))
                 .isInstanceOf(RuntimeException.class) ;
     }
 
